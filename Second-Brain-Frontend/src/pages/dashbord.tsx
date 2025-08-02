@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import '../App.css'
 import { Button } from '../components/buton'
-import { Card } from '../components/card';
+import { Card, type Cardprops } from '../components/card';
 import { CreateContentModal } from '../components/createcontentmodal';
 import { Plusicon } from '../icons/plus';
 import { Shareicon } from '../icons/share';
 import { Sidebar } from '../components/sidebar';
 import { useContents } from '../hooks/usecontent';
+import axios from 'axios';
 
 export function Dashboard() {
-    const [modal, Setmodal] = useState(true);
+    const [modal, Setmodal] = useState(false);
     const {contents,refresh} = useContents();
 
     useEffect(()=>{
@@ -24,13 +25,29 @@ export function Dashboard() {
             <CreateContentModal open={modal} onClose={() => Setmodal(false)} />
 
             <div className='flex justify-end gap-4 p-2 '>
+                
                 <Button onClick={() => Setmodal(true)} variant="primary" text="Add Content" size='md' startIcon={<Plusicon size='md' />} />
-                <Button variant="secondary" text="Share Brain" size='md' fullwidith={false} startIcon={<Shareicon size='md' />} />
+
+
+                <Button variant="secondary" text="Share Brain" size='md' fullwidith={false} 
+                onClick={async ()=>{
+                    const response=await axios.post("http://localhost:3000/api/v1/brain/share",{
+                        share:true
+                    },{
+                        headers:{
+                            "Authorization":localStorage.getItem("token")
+                        }
+                    })
+                    const shareurl= `http://localhost:3000/api/v1/brain/${response.data.hash}`
+                    alert(shareurl);
+                }}
+                startIcon={<Shareicon size='md'  />} />
+
             </div>
             <div className='flex  flex-wrap justify-center gap-3 '>
-                {contents.map(item => <Card
+                {contents.map((item:Cardprops) => <Card
                     key={item._id}
-                    id={item._id}
+                    _id={item._id}
                     type={item.type}
                     link={item.link}
                     title={item.title}
