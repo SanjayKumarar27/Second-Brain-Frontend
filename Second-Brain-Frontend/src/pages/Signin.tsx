@@ -29,7 +29,13 @@ export function Signin(){
         <div className="bg-white rounded-xl min-w-48 p-8">
             <Input ref={usernameref} placeholder="Username"/>
             <Input ref={passwordref} placeholder="Password"/>
+        <div onClick={()=>{
+            navigate("/signup")
+        }}>
+            Don't have an account ? <span className="text-[#3e38a7] cursor-pointer ">SignUp</span>
+        </div>
             <div className="flex justify-center pt-3">
+            
             <Button onClick={signin} text="Signin" size="md" variant="primary" fullwidith={true}/>
         </div>
         </div>

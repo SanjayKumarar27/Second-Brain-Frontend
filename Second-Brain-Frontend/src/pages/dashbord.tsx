@@ -8,19 +8,28 @@ import { Shareicon } from '../icons/share';
 import { Sidebar } from '../components/sidebar';
 import { useContents } from '../hooks/usecontent';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export function Dashboard() {
     const [modal, Setmodal] = useState(false);
     const {contents,refresh} = useContents();
-
+    const navigate=useNavigate();
     useEffect(()=>{
         refresh();
     },[modal]);
 
-    return <div>
+    const token=localStorage.getItem("token");
+    useEffect(()=>{
+        if(!token){ 
+            navigate("/signin")
+        }
+    },[token])
+   
+    return  <div>
         <div>
             <Sidebar />
         </div>
+        
         <div className="ml-68 min-h-screen bg-[#eeeeef]">
             <CreateContentModal open={modal} onClose={() => Setmodal(false)} />
 
@@ -38,7 +47,7 @@ export function Dashboard() {
                             "Authorization":localStorage.getItem("token")
                         }
                     })
-                    const shareurl= `http://localhost:3000/api/v1/brain/${response.data.hash}`
+                    const shareurl= `http://localhost:5173/share/${response.data.hash}`
                     alert(shareurl);
                 }}
                 startIcon={<Shareicon size='md'  />} />
